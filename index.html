@@ -1,11 +1,60 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>a Coming soon...</title>
-  </head>
-  <body>
-    <h1>It works!</h1>
-  </body>
+<html lang="zh-cn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Zi's website</title>
+  <link rel="shortcut icon" href="favicon.png">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="main">
+    <div class="header">
+      <div class="image-left"></div>
+      <div class="contact-right" style="position:absolute; z-index:2">
+        <h2 style="font-family: 'Baloo 2', cursive;">Zi's website</h2>
+        <br>
+        <div id="dark-mode-toggle" class="back-to-top night" title="夜间模式"></div>
+        <!--
+        <img style="margin-left: 50px;" id="dark-mode-toggle" src="https://cdn.jsdelivr.net/gh/zigou23/blog/img/dark_mode.svg" alt="夜间模式" title="夜间模式" >
+        -->
+      </div>
+    </div>
+    <div class="about">
+      <h2>关于博主</h2>
+      <p style="font-family: 'FZFWZZAY', cursive;">自谓文能提笔控萝莉，武能床上安人妻；进可欺身压正太，退可提臀迎众基；怎奈何萝莉敢来把哥欺，人妻已然弃哥去，正太投入御姐里，众基已然成家去。那么，问题来了，你好，约吗？</p>
+      <br>
+      <p>本人精通Adobe系列等软件的安装与卸载；熟练掌握VB、C++、FoxPro、SQL、java、css、html、js等单词的拼写；熟悉windows、Winphone、Linux、Mac、Android、Ios、鸿蒙等操作系统的开关机；娴熟英语六级、日语N1、汉语六级、法语C2的等级考试的发卷收卷流程。在这里找一家IT公司端茶递水的工作。</p>
+      <br>
+      <div class="p-break"></div>
+      <h2>联系方式</h2>
+      <p>邮箱： </p>
+      <!--target="_blank"-->
+      <p>留言板： <a href="/chat" style="color: #16a8e4;">Go for me</a>
+        or <a href="https://chat.getloli.com/room/@zig" style="color: #16a8e4;">Chat room</a>
+      </p>
+      <br>
+      <div class="p-break"></div>
+      <h2>每日诗词</h2>
+      <span id="jinrishici-sentence">正在加载今日诗词....</span>
+      <script src="https://sdk.jinrishici.com/v2/browser/jinrishici.js" charset="utf-8"></script>
+      <br>
+      <br>
+      <div class="p-break"></div>
+      <h2>天气</h2>
+      <iframe scrolling="no" src="https://tianqiapi.com/api.php?style=tb&amp;skin=pitaya" frameborder="0" width="350" height="24" allowtransparency="true"></iframe>
+      </div>
+    </div>
+  </div>
+  <footer class="footer-nav"> 
+  <!--   
+  <div class="icp">
+          <a target="_blank" href="http://www.beian.gov.cn/">
+          <img src="icp.png">备</a>
+          <a href="http://beian.miit.gov.cn" target="_blank">ICP</a> 
+  </div>
+  <div></div>-->
+  </footer>
+<script src="script.js"></script>
+</body>
 </html>
