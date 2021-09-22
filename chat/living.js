@@ -1,4 +1,4 @@
-function livingjSitetime() {
+/*function livingjSitetime() {
                 window.setTimeout("livingjSitetime()", 1000);
                 var seconds = 1000
                 var minutes = seconds * 60
@@ -26,3 +26,4 @@ function livingjSitetime() {
                     diffHours + " 小时 " + diffMinutes + " 分钟 " + diffSeconds + " 秒啦"
             }
 livingjSitetime()
+*/
