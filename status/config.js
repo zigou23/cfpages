@@ -17,8 +17,6 @@ window.Config = {
   // 支持 Monitor-Specific 和 Read-Only 两只 Api Key
   ApiKeys: [
     'ur1680981-5f764d83f8204dffc2b2fac7',
-    'm784497419-de55aa09902ccb3ab22d548a',
-    'm784496436-71a4bf7b1e3bdf7756be131b',
   ],
 
   // 是否显示监测站点的链接
@@ -33,7 +31,7 @@ window.Config = {
   Navi: [
     {
       text: 'Homepage',
-      url: 'https://qsim.top/status/'
+      url: 'https://qsim.top/'
     },
     {
       text: 'Blog',
