@@ -66,8 +66,6 @@
     }
 
     :root {
-        --site-language-direction: ltr;
-        --site-language-alignment: left;
         --viewport-height: 100vh;
         --background-height: 100vh;
     }
@@ -741,26 +739,17 @@
         position: relative;
     }
     #icons01>li>a:after{
-        font-family: sans-serif;
         position: absolute;
-        top: 100%; 
-        bottom: auto; 
+        top: 100%;
         left: 50%;
         opacity: 0;
-        --tw-bg-opacity: 1; 
-        background-color: rgba(113,113,122,var(--tw-bg-opacity));
-        --tw-text-opacity: 1; 
-        color: rgba(244,244,245,var(--tw-text-opacity));
+        background-color: rgba(113,113,122,1);
+        color: rgba(244,244,245,1);
         border-radius: .25rem;
-        /*display: block;*/
         margin-top: .5rem;
         font-size: .875rem;
-        line-height: 1.25rem;
+        line-height: 1.2rem;
         padding: .25rem .5rem;
-        /*overflow: hidden; 
-        text-overflow: ellipsis; 
-        white-space: pre; 
-        z-index: 30; */
         content: attr(title);
         transition: opacity .2s,transform .2s;
         transform: translate(-50%,.4rem);
