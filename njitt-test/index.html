@@ -15,6 +15,7 @@
 <link rel="stylesheet" href="./as/reset.min.css" />
 <script type="text/javascript" src="./as/jquery.min.js"></script>
 <script src="./as/main.js"></script>
+<script src="./as/jsonp.js"></script>
 <!--下拉框-->
 <script src="./as/js.js"></script>
 <!--下拉框-->
@@ -307,7 +308,7 @@
                         type:"get",
                         dataType:"json",
                         data:{"buildid":buildId},
-                        url : "http://newapp.njitt.edu.cn/ydd/sdf/getFloorid",
+                        url : "https://get.qsim.top/get/newapp.njitt.edu.cn/ydd/sdf/getFloorid",
                         success : function(data) {
                             //先清空原来的数据
                             if(data == null){
@@ -350,7 +351,7 @@
                     .ajax({
                         type : 'get',
                         dataType : 'json',
-                        url : "http://newapp.njitt.edu.cn/ydd/sdf/getRomnumid?buildid=" + buildId
+                        url : "https://get.qsim.top/get/newapp.njitt.edu.cn/ydd/sdf/getRomnumid?buildid=" + buildId
                                 + "&floorid=" + floorId,
                         success : function(data) {
                             if(data == null){
@@ -383,7 +384,7 @@
             $.ajax({
                 type : 'get',
                 dataType : 'json',
-                url : "http://newapp.njitt.edu.cn/ydd/sdf/getSdfInfo?buildid=" + buildId + "&floorid="
+                url : "https://get.qsim.top/get/newapp.njitt.edu.cn/ydd/sdf/getSdfInfo?buildid=" + buildId + "&floorid="
                         + floorId + "&roomid=" + rommunId,
                 success : function(data) {
                     if(data == null){
