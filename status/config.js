@@ -9,9 +9,9 @@ window.Config = {
 
   // UptimeRobot Api 域名 api.uptimerobot.com
   // 只需填写域名部分，默认为官网域名 qsim-status.zigou.workers.dev
-  // 因官网 API 时不时的会 CROS 报错，可填自定义反代域名 p.ffvv.ml/https/api.uptimerobot.com qsim-status.zigou.workers.dev
+  // 因官网 API 时不时的会 CROS 报错，可填自定义反代域名 p.ffvv.ml/https/api.uptimerobot.com qsim-status.zigou.workers.dev status-api.qsim.top
   // 详见 https://github.com/yb/uptime-status/ 说明
-  ApiDomain: 'status-api.qsim.top',
+  ApiDomain: 'qsim.top/functions/status',
 
   // UptimeRobot Api Keys
   // 支持 Monitor-Specific 和 Read-Only 两只 Api Key
