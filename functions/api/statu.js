@@ -10,7 +10,7 @@ export async function onRequest(context) {
   } = context;
 
   let url = new URL(request.url);
-  let response = await fetch('https://api.uptimerobot.com' + url.pathname, request);
+  let response = await fetch('https://api.uptimerobot.com/v2/getMonitors' + url.pathname, request);
   response = new Response(response.body, response);
   
   // response.headers.set('Access-Control-Allow-Origin', '*');
