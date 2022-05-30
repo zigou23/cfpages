@@ -308,7 +308,7 @@
                         type:"get",
                         dataType:"json",
                         data:{"buildid":buildId},
-                        url : "https://gets.qsim.top/get/newapp.njitt.edu.cn/ydd/sdf/getFloorid",
+                        url : "https://get.qsim.top/get/newapp.njitt.edu.cn/ydd/sdf/getFloorid",
                         success : function(data) {
                             //先清空原来的数据
                             if(data == null){
@@ -351,7 +351,7 @@
                     .ajax({
                         type : 'get',
                         dataType : 'json',
-                        url : "https://gets.qsim.top/get/newapp.njitt.edu.cn/ydd/sdf/getRomnumid?buildid=" + buildId
+                        url : "https://get.qsim.top/get/newapp.njitt.edu.cn/ydd/sdf/getRomnumid?buildid=" + buildId
                                 + "&floorid=" + floorId,
                         success : function(data) {
                             if(data == null){
@@ -384,7 +384,7 @@
             $.ajax({
                 type : 'get',
                 dataType : 'json',
-                url : "https://gets.qsim.top/get/newapp.njitt.edu.cn/ydd/sdf/getSdfInfo?buildid=" + buildId + "&floorid="
+                url : "https://get.qsim.top/get/newapp.njitt.edu.cn/ydd/sdf/getSdfInfo?buildid=" + buildId + "&floorid="
                         + floorId + "&roomid=" + rommunId,
                 success : function(data) {
                     if(data == null){
