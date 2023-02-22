@@ -2,7 +2,7 @@ export async function onRequest(context) {
   const { request } = context;
   
   // 允许访问的域名列表
-  const allowedOrigins = ['https://qsim,top'];
+  const allowedOrigins = ['https://qsim.top'];
   
   // 判断请求来源是否在允许访问的域名列表中
   const origin = request.headers.get('Referer');
