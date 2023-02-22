@@ -21,9 +21,9 @@ export async function onRequest(context) {
   let response = await fetch('https://api.uptimerobot.com/v2/getMonitors', request);
   response = new Response(response.body, response);
 
-  response.headers.set('Access-Control-Allow-Methods', '*');
+  response.headers.set('Access-Control-Allow-Methods', 'POST');
   response.headers.set('Access-Control-Allow-Credentials', 'true');
-  response.headers.set('Access-Control-Allow-Origin', origin);
+  response.headers.set('Access-Control-Allow-Origin', 'https://qsim.top');
   response.headers.set('Access-Control-Allow-Headers', 'Content-Type,Access-Token');
   response.headers.set('Access-Control-Expose-Headers', '*');
   return response;
