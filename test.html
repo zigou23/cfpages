@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>My Website</title>
+    <style>
+      /* 设置初始背景颜色为渐变色 */
+      body {
+        background: linear-gradient(to bottom right, #00bfff, #1e90ff);
+        transition: background 1s ease-in-out;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Welcome to my website!</h1>
+    <p>This is the homepage.</p>
+
+    <script>
+      // 获取Bing每日一图的API链接
+      const apiUrl = 'https://global.bing.com/HPImageArchive.aspx?format=js&idx=0&n=1&mkt=en-US';
+
+      // 等页面加载完成后再获取每日一图并将其设置为背景
+      window.onload = () => {
+        // 发送HTTP请求并处理返回的数据
+        fetch(apiUrl)
+          .then(response => response.json())
+          .then(data => {
+            // 获取每日一图的图片链接
+            const imageUrl = `https://www.bing.com${data.images[0].url}`;
+
+            // 创建一个新的Image对象来加载图片
+            const image = new Image();
+            image.src = imageUrl;
+
+            // 当图片加载完成后将其设置为背景
+            image.onload = () => {
+              document.body.style.backgroundImage = `url(${imageUrl})`;
+              document.body.style.backgroundSize = 'cover';
+              document.body.style.transition = 'background 1s ease-in-out';
+            };
+          })
+          .catch(error => {
+            console.error('Failed to fetch Bing daily image:', error);
+          });
+      };
+    </script>
+  </body>
+</html>
