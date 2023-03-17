@@ -91,8 +91,8 @@
 			min-height: var(--viewport-height);
 			line-height: 1.0;
 			overflow-x: hidden;
-			/*background: linear-gradient(45deg, rgba(74,53,93,0.85) 0%, rgba(40,51,107,0.85) 100%);*/
-			/*background: linear-gradient(45deg, rgba(3,28,25,0.53) 0%, rgba(8,28,59,0.53) 100%), url(https://i1.wp.com/bingapi.zigou.workers.dev/imgs) no-repeat center;*/
+			/* background: linear-gradient(45deg, rgba(3,28,25,0.53) 0%, rgba(8,28,59,0.53) 100%);*/
+			background-color: rgba(8,28,59,0.53);
 			background-size: cover, cover;
 			transition: all .8s;
 			-webkit-text-size-adjust: none;
@@ -1224,6 +1224,7 @@
 		<style>
 			body {
 				overflow: auto !important;
+				background: linear-gradient(45deg, rgba(3,28,25,0.53) 0%, rgba(8,28,59,0.53) 100%);
 			}
 
 			#main {
@@ -1245,18 +1246,7 @@
 			}
 		</style>
 	</noscript>
-	<script>
-		window.dataLayer = window.dataLayer || [];
-		function gtag() { dataLayer.push(arguments); }
-		gtag('js', new Date());
-
-		gtag('config', 'G-4DJDFJZQ85');
-		var d = 100 * (new Date().getMonth() + 1) + new Date().getDate();
-		document.write("<style>body{background:linear-gradient(45deg, rgba(3,28,25,0.53) 0%, rgba(8,28,59,0.53) 100%),url(https://i1.wp.com/bingapi.zigou.workers.dev/imgs?" + d + ") center no-repeat;}</style>");
-
-	</script>
 </head>
-
 <body class="is-loading"><svg xmlns="http://www.w3.org/2000/svg" version="1.1"
 		xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 40 40" display="none" width="0" height="0">
 		<symbol id="icon-home" viewBox="0 0 40 40">
@@ -2066,8 +2056,12 @@
 			_lightboxGallery.init({ id: 'gallery01', navigation: true, mobile: true });
 		})();
 	</script>
-	<!-- Global site tag (gtag.js) - Google Analytics -->
-	<script async src="https://www.googletagmanager.com/gtag/js?id=G-4DJDFJZQ85"></script>
+	<script>
+		window.dataLayer = window.dataLayer || [];
+		var d = 100 * (new Date().getMonth() + 1) + new Date().getDate();
+		var s =(1000*d+Math.E*d).toFixed(0);
+		document.write("<style>body{background:linear-gradient(45deg, rgba(3,28,25,0.53) 0%, rgba(8,28,59,0.53) 100%),url(https://i1.wp.com/bingapi.zigou.workers.dev/imgs/" + s + ") center no-repeat;}</style>");
+	</script>
 </body>
 
 </html>
