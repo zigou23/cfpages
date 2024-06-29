@@ -222,11 +222,32 @@
 	</div>
 	<script src="script.js"></script>
 	<script>
+		// function updateBackground() {
+		// 	var d = 100 * (new Date().getMonth() + 1) + new Date().getDate();
+		// 	var s = (1000 * d + Math.E * d).toFixed(0);
+
+		// 	if (window.innerWidth < 500) {
+		// 		document.body.style.background = "linear-gradient(45deg, rgba(3,28,25,0.53) 0%, rgba(8,28,59,0.53) 100%), url(https://i1.wp.com/bing.qsim.top/imgs/mobile/" + s + ") center no-repeat";
+		// 	} else {
+		// 		document.body.style.background = "linear-gradient(45deg, rgba(3,28,25,0.53) 0%, rgba(8,28,59,0.53) 100%), url(https://i1.wp.com/bing.qsim.top/imgs/" + s + ") center no-repeat";
+		// 	}
+		// }
+
+		// window.onload = function () {
+		// 	setTimeout(updateBackground, 10); // milliseconds delay
+		// };
+
+		// window.onresize = updateBackground;
+
 		window.onload = function () {
 			setTimeout(function () {
 				var d = 100 * (new Date().getMonth() + 1) + new Date().getDate();
 				var s = (1000 * d + Math.E * d).toFixed(0);
-				document.body.style.background = "linear-gradient(45deg, rgba(3,28,25,0.53) 0%, rgba(8,28,59,0.53) 100%), url(https://i1.wp.com/bing.qsim.top/imgs/" + s + ") center no-repeat";
+				if (window.innerWidth < 500) {
+					document.body.style.background = "linear-gradient(45deg, rgba(3,28,25,0.53) 0%, rgba(8,28,59,0.53) 100%), url(https://i1.wp.com/bing.qsim.top/imgs/mobile/" + s + ") center no-repeat";
+				} else {
+					document.body.style.background = "linear-gradient(45deg, rgba(3,28,25,0.53) 0%, rgba(8,28,59,0.53) 100%), url(https://i1.wp.com/bing.qsim.top/imgs/" + s + ") center no-repeat";
+				}
 			}, 10); // milliseconds delay
 		};
 	</script>
