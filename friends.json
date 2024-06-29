@@ -1,0 +1,38 @@
+[
+  {
+    "name": "MUKAPP",
+    "image": "https://www.mukapp.top/pic/muk/small.webp",
+    "link": "https://www.mukapp.top/",
+    "description": "MUK的小窝"
+  },
+  {
+    "name": "yiyun",
+    "image": "https://moeci.com/images/avatar.png",
+    "link": "https://moeci.com/",
+    "description": "The stupid one is me"
+  },
+  {
+    "name": "Zkeq",
+    "image": "https://img.onmicrosoft.cn/Avatar.jpg",
+    "link": "https://icodeq.com/",
+    "description": "Zkeq 的 Coding 日志"
+  },
+  {
+    "name": "啊不都",
+    "image": "https://www.oplog.cn/img/avatar.png",
+    "link": "https://www.oplog.cn",
+    "description": ""
+  },
+  {
+    "name": "Tianli",
+    "image": "https://q.qlogo.cn/g?b=sdk&k=30VsmGICVkAD8uuydVGxibw&kti=Zn5pqgAAAAE&s=640",
+    "link": "https://tianli-blog.club/",
+    "description": "自知之明是最可贵的知识！"
+  },
+  {
+    "name": "乐特",
+    "image": "https://www.imlete.cn/img/avatar.png",
+    "link": "https://blog.imlete.cn/",
+    "description": "人生只有一次，大胆的生活！！"
+  }
+]
