@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-	<title>Zi's Website</title>
+	<title>ZiGou Website</title>
 	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no" />
 	<meta http-equiv="x-dns-prefetch-control" content="on" />
@@ -82,7 +82,10 @@
 						<span class="frame imagehead">
 						</span>
 					</div>
-					<h1 id="text01">zigou Website</h1>
+					<h1 id="text01">Hi there👋</h1>
+					<p class="text04">I'm ZiGou, a passionate individual fueled by curiosity and creativity. Thriving on tackling
+						challenges and exploring new ideas, I believe in continuous learning and find great joy in traveling. Let's
+						connect and explore together!</p>
 					<p class="text04">When you feel like hope is gone, look inside you and search your soul. you will find a hero
 						lies in you. dreams are hard to follow, but don't let anyone steal your dream.</p>
 				</section>
@@ -103,7 +106,7 @@
                     </div>
                 </section> -->
 				<section id="about-section">
-					<h2 class="text03">About</h2>
+					<h2 class="text03">About Me</h2>
 					<p class="text04">自谓文能提笔控萝莉，武能床上安人妻；进可欺身压正太，退可提臀迎众基；怎奈何萝莉敢来把哥欺，人妻已然弃哥去，正太投入御姐里，众基已然成家去。那么，问题来了，你好，约吗？</p>
 					<p class="text04">
 						本人精通Adobe系列等软件的安装与卸载；熟练掌握VB、C、C++、C#、Python、PHP、FoxPro、SQL、java、css、html、JavaScript等单词的拼写；熟悉windows、Winphone、Linux、Mac、Android、Ios、鸿蒙等操作系统的开关机；娴熟英语六级、日语N1、汉语六级、法语C2的等级考试的发卷收卷流程。在这里找一家IT公司端茶递水的工作。<!-- Hi guys. You must have worked hard to find me. I am a silent person and it is difficult to get along with. But I will try to help as many people as possible. My page is very simple, even the theme is copied, but that doesn't mean I can't do one thing well. When this pandemic spreads, I want to work hard to learn some network knowledge, and then do what I want to do. I don't know how to start, but I'm sure I'll keep going! (Translate by Google.) -->
@@ -116,36 +119,43 @@
 					<!-- <a href="/link">More...(testing)</a> -->
 					<script>
 						document.addEventListener("DOMContentLoaded", function () {
-							// 使用 fetch 请求 friends.json 文件
-							fetch('./friends.json')
-								.then(response => response.json())
-								.then(data => {
-									// 对数据进行乱序
-									data.sort(() => Math.random() - 0.5);
+							// 检查当前域名是否为 qsim.top
+							if (window.location.hostname === 'qsim.top') {
+								// 使用 fetch 请求 friends.json 文件
+								fetch('./friends.json')
+									.then(response => response.json())
+									.then(data => {
+										// 对数据进行乱序
+										data.sort(() => Math.random() - 0.5);
 
-									const container = document.getElementById('friend-container');
-									data.forEach(friend => {
-										const li = document.createElement('li');
+										const container = document.getElementById('friend-container');
+										data.forEach(friend => {
+											const li = document.createElement('li');
 
-										const link = document.createElement('a');
-										link.href = friend.link;
-										link.title = friend.description;
-										link.target = '_blank';
+											const link = document.createElement('a');
+											link.href = friend.link;
+											link.title = friend.description;
+											link.target = '_blank';
 
-										const span = document.createElement('span');
-										span.textContent = friend.name;
+											const span = document.createElement('span');
+											span.textContent = friend.name;
 
-										link.appendChild(span);
-										li.appendChild(link);
-										container.appendChild(li);
+											link.appendChild(span);
+											li.appendChild(link);
+											container.appendChild(li);
+										});
+									})
+									.catch(error => {
+										console.error('Error loading friends:', error);
 									});
-								})
-								.catch(error => {
-									console.error('Error loading friends:', error);
-								});
+							} else {
+								const container = document.getElementById('friend-container');
+								container.textContent = 'Host domain is not qsim.top.';
+								console.error('Host domain is not qsim.top. Cannot load friends.json.');
+							}
 						});
-
 					</script>
+
 				</section>
 				<section id="contact-section">
 					<h2 class="text03">Contact</h2>
