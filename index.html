@@ -151,7 +151,15 @@
 							}
 						});
 					</script>
-
+					<p style="color: #adadad;display: inline;" id="friend-link">If you want to add a friend link, you can submit a PR on</p>
+					<a style="color: #7FB3D5;" href="https://github.com/zigou23/cfpages/tree/homepage">GitHub</a>
+					<script>
+						const userLang = navigator.language || navigator.languages[0];
+						const friendLinkText = document.getElementById("friend-link");
+						if (userLang.includes('zh')) {
+							friendLinkText.innerHTML = '如果你想添加友链，可以提交 PR 到 ';
+						}
+					</script>
 				</section>
 				<section id="contact-section">
 					<h2 class="text03">Contact</h2>
