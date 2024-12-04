@@ -119,15 +119,11 @@
 					<!-- <a href="/link">More...(testing)</a> -->
 					<script>
 						document.addEventListener("DOMContentLoaded", function () {
-							// 检查当前域名是否为 qsim.top
 							if (window.location.hostname === 'qsim.top') {
-								// 使用 fetch 请求 friends.json 文件
 								fetch('./friends.json')
 									.then(response => response.json())
 									.then(data => {
-										// 对数据进行乱序
 										data.sort(() => Math.random() - 0.5);
-
 										const container = document.getElementById('friend-container');
 										data.forEach(friend => {
 											const li = document.createElement('li');
