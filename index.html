@@ -127,9 +127,9 @@
 										const container = document.getElementById('friend-container');
 										data.forEach(friend => {
 											const li = document.createElement('li');
-
 											const link = document.createElement('a');
-											link.href = friend.link;
+											const encodedUrl = encodeURIComponent(friend.link.replace(/^https?:\/\//, ''));
+											link.href = `https://return-x.netlify.app/return/?url=${encodedUrl}`;
 											link.title = friend.description;
 											link.target = '_blank';
 
