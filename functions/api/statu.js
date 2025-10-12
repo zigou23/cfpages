@@ -21,6 +21,15 @@ export async function onRequest(context) {
       }
     });
   }
+  // 只允许 POST 请求
+  if (request.method !== 'POST') {
+    return new Response('Method Not Allowed.', { 
+      status: 405,
+      headers: {
+        'Content-Type': 'text/plain'
+      }
+    });
+  }
   // 处理预检请求
   let response = await fetch('https://api.uptimerobot.com/v2/getMonitors', request);
   response = new Response(response.body, response);
