@@ -340,7 +340,7 @@ body.is-instant:after {
 }
 
 .imagehead {
-  background: url(img/hd.webp) no-repeat;
+  background: url(/img/hd.webp) no-repeat;
   background-size: 8rem;
   opacity: 0.75;
   transition: all .8s;
