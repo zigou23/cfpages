@@ -208,9 +208,9 @@ svg {
   font-size: 15px;
 }
 
-[data-theme='dark'] .theme-icon::before {
+/* [data-theme='dark'] .theme-icon::before {
   content: '☼';
-}
+} */
 
 .menu-button {
   display: none;
