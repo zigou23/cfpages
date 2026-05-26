@@ -1,0 +1,98 @@
+[
+  {
+    "name": "MUKAPP",
+    "description": {
+      "en": "MUK's Den",
+      "zh": "MUK的小窝"
+    },
+    "link": ["mukapp.top"]
+  },
+  {
+    "name": "yiyun",
+    "description": {
+      "en": "The stupid one is me",
+      "zh": "The stupid one is me"
+    },
+    "link": ["moeci.com"]
+  },
+  {
+    "name": "Zkeq",
+    "description": {
+      "en": "Zkeq's Coding Journal",
+      "zh": "Zkeq 的 Coding 日志"
+    },
+    "link": ["icodeq.com"]
+  },
+  {
+    "name": "啊不都",
+    "description": {
+      "en": "abudu",
+      "zh": "abudu"
+    },
+    "link": ["oplog.cn"]
+  },
+  {
+    "name": "Tianli",
+    "description": {
+      "en": "To know oneself is the most precious knowledge.",
+      "zh": "自知之明是最可贵的知识！"
+    },
+    "link": ["blog.tianli0.top"]
+  },
+  {
+    "name": "乐特",
+    "description": {
+      "en": "You only live once, live boldly!",
+      "zh": "人生只有一次，大胆的生活！！"
+    },
+    "link": ["www.imlete.cn"]
+  },
+  {
+    "name": "cky",
+    "description": {
+      "en": "I'm ordinary, but I'm unique",
+      "zh": "我很平凡，但我独一无二"
+    },
+    "link": ["junx.me"]
+  },
+  {
+    "name": "TUEP",
+    "description": {
+      "en": "Lovers end up together; broke people just watch them forever.",
+      "zh": "有情人终成眷属，没钱人亲眼目睹。"
+    },
+    "link": ["blog.tuep.cn"]
+  },
+  {
+    "name": "FIFCOM",
+    "description": {
+      "en": "Coo-coo",
+      "zh": "咕→咕↑咕↓↑咕↓"
+    },
+    "link": ["blog.fifcom.cn"]
+  },
+  {
+    "name": "Baoshuo",
+    "description": {
+      "en": "Even if the past is heavy, accept it and keep moving forward",
+      "zh": "即使是沉重的过去，也要接受它再继续向前迈进"
+    },
+    "link": ["baoshuo.ren"]
+  },
+  {
+    "name": "梦爱吃鱼",
+    "description": {
+      "en": "May you encounter nothing but tenderness when you look up in the days to come.",
+      "zh": "但愿日子清静抬头遇见的满是柔情"
+    },
+    "link": ["www.bsgun.cn"]
+  },
+  {
+    "name": "葭兴网",
+    "description": {
+      "en": "A personal site for fun",
+      "zh": "兴趣使然的个人小站"
+    },
+    "link": ["wwww.jaxing.cc"]
+  }
+]

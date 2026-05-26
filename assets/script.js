@@ -1,668 +1,618 @@
-(function () {
-  var on = addEventListener,
-    $ = function (q) { return document.querySelector(q) },
-    $$ = function (q) { return document.querySelectorAll(q) },
-    $body = document.body,
-    $inner = $('.inner'),
-    client = (function () {
-      var o = { browser: 'other', browserVersion: 0, os: 'other', osVersion: 0, mobile: false, canUse: null },
-        ua = navigator.userAgent,
-        a, i;
-      a = [
-        ['firefox', /Firefox\/([0-9\.]+)/],
-        ['edge', /Edge\/([0-9\.]+)/],
-        ['safari', /Version\/([0-9\.]+).+Safari/],
-        ['chrome', /Chrome\/([0-9\.]+)/],
-        ['chrome', /CriOS\/([0-9\.]+)/],
-        ['ie', /Trident\/.+rv:([0-9]+)/]
-      ]; for (i = 0; i < a.length; i++) {
-        if (ua.match(a[i][1])) {
-          o.browser = a[i][0];
-          o.browserVersion = parseFloat(RegExp.$1); break;
-        }
-      } a = [
-        ['ios', /([0-9_]+) like Mac OS X/, function (v) { return v.replace('_', '.').replace('_', ''); }],
-        ['ios', /CPU like Mac OS X/, function (v) { return 0 }],
-        ['ios', /iPad; CPU/, function (v) { return 0 }],
-        ['android', /Android ([0-9\.]+)/, null],
-        ['mac', /Macintosh.+Mac OS X ([0-9_]+)/, function (v) { return v.replace('_', '.').replace('_', ''); }],
-        ['windows', /Windows NT ([0-9\.]+)/, null],
-        ['undefined', /Undefined/, null],
-      ]; for (i = 0; i < a.length; i++) {
-        if (ua.match(a[i][1])) {
-          o.os = a[i][0];
-          o.osVersion = parseFloat(a[i][2] ? (a[i][2])(RegExp.$1) : RegExp.$1); break;
-        }
-      } if (o.os == 'mac' && ('ontouchstart' in window) && ((screen.width == 1024 && screen.height == 1366) || (screen.width == 834 && screen.height == 1112) || (screen.width == 810 && screen.height == 1080) || (screen.width == 768 && screen.height == 1024))) o.os = 'ios';
-      o.mobile = (o.os == 'android' || o.os == 'ios'); var _canUse = document.createElement('div');
-      o.canUse = function (p) {
-        var e = _canUse.style,
-          up = p.charAt(0).toUpperCase() + p.slice(1); return (p in e || ('Moz' + up) in e || ('Webkit' + up) in e || ('O' + up) in e || ('ms' + up) in e);
-      }; return o;
-    }()),
-    trigger = function (t) {
-      if (client.browser == 'ie') {
-        var e = document.createEvent('Event');
-        e.initEvent(t, false, true);
-        dispatchEvent(e);
-      } else dispatchEvent(new Event(t));
-    },
-    cssRules = function (selectorText) {
-      var ss = document.styleSheets,
-        a = [],
-        f = function (s) {
-          var r = s.cssRules,
-            i; for (i = 0; i < r.length; i++) {
-              if (r[i] instanceof CSSMediaRule && matchMedia(r[i].conditionText).matches) (f)(r[i]);
-              else if (r[i] instanceof CSSStyleRule && r[i].selectorText == selectorText) a.push(r[i]);
-            }
-        },
-        x, i; for (i = 0; i < ss.length; i++) f(ss[i]); return a;
-    },
-    thisHash = function () {
-      var h = location.hash ? location.hash.substring(1) : null,
-        a; if (!h) return null; if (h.match(/\?/)) {
-          a = h.split('?');
-          h = a[0];
-          history.replaceState(undefined, undefined, '#' + h);
-          window.location.search = a[1];
-        } if (h.length > 0 && !h.match(/^[a-zA-Z]/)) h = 'x' + h; if (typeof h == 'string') h = h.toLowerCase(); return h;
-    },
-    scrollToElement = function (e, style, duration) {
-      var y, cy, dy, start, easing, offset, f; if (!e) y = 0;
-      else {
-        offset = (e.dataset.scrollOffset ? parseInt(e.dataset.scrollOffset) : 0) * parseFloat(getComputedStyle(document.documentElement).fontSize); switch (e.dataset.scrollBehavior ? e.dataset.scrollBehavior : 'default') {
-          case 'default':
-          default:
-            y = e.offsetTop + offset; break;
-          case 'center':
-            if (e.offsetHeight < window.innerHeight) y = e.offsetTop - ((window.innerHeight - e.offsetHeight) / 2) + offset;
-            else y = e.offsetTop - offset; break;
-          case 'previous':
-            if (e.previousElementSibling) y = e.previousElementSibling.offsetTop + e.previousElementSibling.offsetHeight + offset;
-            else y = e.offsetTop + offset; break;
-        }
-      } if (!style) style = 'smooth'; if (!duration) duration = 750; if (style == 'instant') { window.scrollTo(0, y); return; } start = Date.now();
-      cy = window.scrollY;
-      dy = y - cy; switch (style) {
-        case 'linear':
-          easing = function (t) { return t }; break;
-        case 'smooth':
-          easing = function (t) { return t < .5 ? 4 * t * t * t : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1 }; break;
-      } f = function () {
-        var t = Date.now() - start; if (t >= duration) window.scroll(0, y);
-        else {
-          window.scroll(0, cy + (dy * easing(t / duration)));
-          requestAnimationFrame(f);
-        }
-      };
-      f();
-    },
-    scrollToTop = function () { scrollToElement(null); },
-    loadElements = function (parent) {
-      var a, e, x, i;
-      a = parent.querySelectorAll('iframe[data-src]:not([data-src=""])'); for (i = 0; i < a.length; i++) {
-        a[i].src = a[i].dataset.src;
-        a[i].dataset.src = "";
-      } a = parent.querySelectorAll('video[autoplay]'); for (i = 0; i < a.length; i++) { if (a[i].paused) a[i].play(); } e = parent.querySelector('[data-autofocus="1"]');
-      x = e ? e.tagName : null; switch (x) {
-        case 'FORM':
-          e = e.querySelector('.field input, .field select, .field textarea'); if (e) e.focus(); break;
-        default:
-          break;
-      }
-    },
-    unloadElements = function (parent) {
-      var a, e, x, i;
-      a = parent.querySelectorAll('iframe[data-src=""]'); for (i = 0; i < a.length; i++) {
-        if (a[i].dataset.srcUnload === '0') continue;
-        a[i].dataset.src = a[i].src;
-        a[i].src = '';
-      } a = parent.querySelectorAll('video'); for (i = 0; i < a.length; i++) { if (!a[i].paused) a[i].pause(); } e = $(':focus'); if (e) e.blur();
-    };
-  window._scrollToTop = scrollToTop; var thisURL = function () { return window.location.href.replace(window.location.search, '').replace(/#$/, ''); }; var getVar = function (name) {
-    var a = window.location.search.substring(1).split('&'),
-      b, k; for (k in a) { b = a[k].split('='); if (b[0] == name) return b[1]; } return null;
-  }; var errors = {
-    handle: function (handler) {
-      window.onerror = function (message, url, line, column, error) {
-        (handler)(error.message); return true;
-      };
-    }, unhandle: function () { window.onerror = null; }
-  };
-  on('load', function () {
-    setTimeout(function () {
-      $body.className = $body.className.replace(/\bis-loading\b/, 'is-playing');
-      setTimeout(function () { $body.className = $body.className.replace(/\bis-playing\b/, 'is-ready'); }, 1000);
-    }, 100);
-  });
-  (function () {
-    var initialSection, initialScrollPoint, initialId, header, footer, name, hideHeader, hideFooter, disableAutoScroll, h, e, ee, k, locked = false,
-      doNext = function () {
-        var section;
-        section = $('#main > .inner > section.active').nextElementSibling; if (!section || section.tagName != 'SECTION') return;
-        location.href = '#' + section.id.replace(/-section$/, '');
-      },
-      doPrevious = function () {
-        var section;
-        section = $('#main > .inner > section.active').previousElementSibling; if (!section || section.tagName != 'SECTION') return;
-        location.href = '#' + (section.matches(':first-child') ? '' : section.id.replace(/-section$/, ''));
-      },
-      doFirst = function () {
-        var section;
-        section = $('#main > .inner > section:first-of-type'); if (!section || section.tagName != 'SECTION') return;
-        location.href = '#' + section.id.replace(/-section$/, '');
-      },
-      doLast = function () {
-        var section;
-        section = $('#main > .inner > section:last-of-type'); if (!section || section.tagName != 'SECTION') return;
-        location.href = '#' + section.id.replace(/-section$/, '');
-      },
-      sections = {};
-    window._next = doNext;
-    window._previous = doPrevious;
-    window._first = doFirst;
-    window._last = doLast;
-    window._scrollToTop = function () {
-      var section, id;
-      scrollToElement(null); if (!!(section = $('section.active'))) {
-        id = section.id.replace(/-section$/, ''); if (id == 'home') id = '';
-        history.pushState(null, null, '#' + id);
-      }
-    }; if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
-    header = $('#header');
-    footer = $('#footer');
-    h = thisHash(); if (h && !h.match(/^[a-zA-Z0-9\-]+$/)) h = null; if (e = $('[data-scroll-id="' + h + '"]')) {
-      initialScrollPoint = e;
-      initialSection = initialScrollPoint.parentElement;
-      initialId = initialSection.id;
-    } else if (e = $('#' + (h ? h : 'home') + '-section')) {
-      initialScrollPoint = null;
-      initialSection = e;
-      initialId = initialSection.id;
-    } if (!initialSection) {
-      initialScrollPoint = null;
-      initialSection = $('#' + 'home' + '-section');
-      initialId = initialSection.id;
-      history.replaceState(undefined, undefined, '#');
-    } name = (h ? h : 'home');
-    hideHeader = name ? ((name in sections) && ('hideHeader' in sections[name]) && sections[name].hideHeader) : false;
-    hideFooter = name ? ((name in sections) && ('hideFooter' in sections[name]) && sections[name].hideFooter) : false;
-    disableAutoScroll = name ? ((name in sections) && ('disableAutoScroll' in sections[name]) && sections[name].disableAutoScroll) : false; if (header && hideHeader) {
-      header.classList.add('hidden');
-      header.style.display = 'none';
-    } if (footer && hideFooter) {
-      footer.classList.add('hidden');
-      footer.style.display = 'none';
-    } ee = $$('#main > .inner > section:not([id="' + initialId + '"])'); for (k = 0; k < ee.length; k++) {
-      ee[k].className = 'inactive';
-      ee[k].style.display = 'none';
-    } initialSection.classList.add('active');
-    loadElements(initialSection); if (header) loadElements(header); if (footer) loadElements(footer); if (!disableAutoScroll) scrollToElement(null, 'instant');
-    on('load', function () { if (initialScrollPoint) scrollToElement(initialScrollPoint, 'instant'); });
-    on('hashchange', function (event) {
-      var section, scrollPoint, id, sectionHeight, currentSection, currentSectionHeight, name, hideHeader, hideFooter, disableAutoScroll, h, e, ee, k; if (locked) return false;
-      h = thisHash(); if (h && !h.match(/^[a-zA-Z0-9\-]+$/)) return false; if (e = $('[data-scroll-id="' + h + '"]')) {
-        scrollPoint = e;
-        section = scrollPoint.parentElement;
-        id = section.id;
-      } else if (e = $('#' + (h ? h : 'home') + '-section')) {
-        scrollPoint = null;
-        section = e;
-        id = section.id;
-      } else {
-        scrollPoint = null;
-        section = $('#' + 'home' + '-section');
-        id = section.id;
-        history.replaceState(undefined, undefined, '#');
-      } if (!section) return false; if (!section.classList.contains('inactive')) {
-        name = (section ? section.id.replace(/-section$/, '') : null);
-        disableAutoScroll = name ? ((name in sections) && ('disableAutoScroll' in sections[name]) && sections[name].disableAutoScroll) : false; if (scrollPoint) scrollToElement(scrollPoint);
-        else if (!disableAutoScroll) scrollToElement(null); return false;
-      } else {
-        locked = true; if (location.hash == '#home') history.replaceState(null, null, '#');
-        name = (section ? section.id.replace(/-section$/, '') : null);
-        hideHeader = name ? ((name in sections) && ('hideHeader' in sections[name]) && sections[name].hideHeader) : false;
-        hideFooter = name ? ((name in sections) && ('hideFooter' in sections[name]) && sections[name].hideFooter) : false;
-        disableAutoScroll = name ? ((name in sections) && ('disableAutoScroll' in sections[name]) && sections[name].disableAutoScroll) : false; if (header && hideHeader) {
-          header.classList.add('hidden');
-          setTimeout(function () { header.style.display = 'none'; }, 375);
-        } if (footer && hideFooter) {
-          footer.classList.add('hidden');
-          setTimeout(function () { footer.style.display = 'none'; }, 375);
-        } currentSection = $('#main > .inner > section:not(.inactive)'); if (currentSection) {
-          currentSectionHeight = currentSection.offsetHeight;
-          currentSection.classList.add('inactive');
-          unloadElements(currentSection);
-          setTimeout(function () {
-            currentSection.style.display = 'none';
-            currentSection.classList.remove('active');
-          }, 375);
-        } setTimeout(function () {
-          if (header && !hideHeader) {
-            header.style.display = '';
-            setTimeout(function () { header.classList.remove('hidden'); }, 0);
-          } if (footer && !hideFooter) {
-            footer.style.display = '';
-            setTimeout(function () { footer.classList.remove('hidden'); }, 0);
-          } section.style.display = '';
-          trigger('resize'); if (!disableAutoScroll) scrollToElement(null, 'instant');
-          sectionHeight = section.offsetHeight; if (sectionHeight > currentSectionHeight) {
-            section.style.maxHeight = currentSectionHeight + 'px';
-            section.style.minHeight = '0';
-          } else {
-            section.style.maxHeight = '';
-            section.style.minHeight = currentSectionHeight + 'px';
-          } setTimeout(function () {
-            section.classList.remove('inactive');
-            section.classList.add('active');
-            section.style.minHeight = sectionHeight + 'px';
-            section.style.maxHeight = sectionHeight + 'px';
-            setTimeout(function () {
-              section.style.transition = 'none';
-              section.style.minHeight = '';
-              section.style.maxHeight = '';
-              loadElements(section); if (scrollPoint) scrollToElement(scrollPoint, 'instant');
-              setTimeout(function () {
-                section.style.transition = '';
-                locked = false;
-              }, 75);
-            }, 750);
-          }, 75);
-        }, 375);
-      } return false;
-    });
-    on('click', function (event) {
-      var t = event.target,
-        tagName = t.tagName.toUpperCase(); switch (tagName) {
-          case 'IMG':
-          case 'SVG':
-          case 'USE':
-          case 'U':
-          case 'STRONG':
-          case 'EM':
-          case 'CODE':
-          case 'S':
-          case 'MARK':
-          case 'SPAN':
-            while (!!(t = t.parentElement))
-              if (t.tagName == 'A') break; if (!t) return; break;
-          default:
-            break;
-        } if (t.tagName == 'A' && t.getAttribute('href').substr(0, 1) == '#' && t.hash == window.location.hash) {
-          event.preventDefault();
-          history.replaceState(undefined, undefined, '#');
-          location.replace(t.hash);
-        }
-    });
-  })(); var style, sheet, rule;
-  style = document.createElement('style');
-  style.appendChild(document.createTextNode(''));
-  document.head.appendChild(style);
-  sheet = style.sheet; if (client.mobile) {
-    (function () {
-      var f = function () {
-        document.documentElement.style.setProperty('--viewport-height', window.innerHeight + 'px');
-        document.documentElement.style.setProperty('--background-height', (window.innerHeight + 250) + 'px');
-      };
-      on('load', f);
-      on('resize', f);
-      on('orientationchange', function () {
-        setTimeout(function () {
-          (f)();
-        }, 100);
-      });
-    })();
-  } if (client.os == 'android') {
-    (function () {
-      sheet.insertRule('body::after { }', 0);
-      rule = sheet.cssRules[0]; var f = function () { rule.style.cssText = 'height: ' + (Math.max(screen.width, screen.height)) + 'px'; };
-      on('load', f);
-      on('orientationchange', f);
-      on('touchmove', f);
-    })();
-    $body.classList.add('is-touch');
-  } else if (client.os == 'ios') {
-    if (client.osVersion <= 11) (function () {
-      sheet.insertRule('body::after { }', 0);
-      rule = sheet.cssRules[0];
-      rule.style.cssText = '-webkit-transform: scale(1.0)';
-    })(); if (client.osVersion <= 11) (function () {
-      sheet.insertRule('body.ios-focus-fix::before { }', 0);
-      rule = sheet.cssRules[0];
-      rule.style.cssText = 'height: calc(100% + 60px)';
-      on('focus', function (event) { $body.classList.add('ios-focus-fix'); }, true);
-      on('blur', function (event) { $body.classList.remove('ios-focus-fix'); }, true);
-    })();
-    $body.classList.add('is-touch');
-  } else if (client.browser == 'ie') {
-    if (!('matches' in Element.prototype)) Element.prototype.matches = (Element.prototype.msMatchesSelector || Element.prototype.webkitMatchesSelector);
-    (function () {
-      var a = cssRules('body::before'),
-        r; if (a.length > 0) {
-          r = a[0]; if (r.style.width.match('calc')) {
-            r.style.opacity = 0.9999;
-            setTimeout(function () { r.style.opacity = 1; }, 100);
-          } else {
-            document.styleSheets[0].addRule('body::before', 'content: none !important;');
-            $body.style.backgroundImage = r.style.backgroundImage.replace('url("images/', 'url("assets/images/');
-            $body.style.backgroundPosition = r.style.backgroundPosition;
-            $body.style.backgroundRepeat = r.style.backgroundRepeat;
-            $body.style.backgroundColor = r.style.backgroundColor;
-            $body.style.backgroundAttachment = 'fixed';
-            $body.style.backgroundSize = r.style.backgroundSize;
-          }
-        }
-    })();
-    (function () {
-      var t, f;
-      f = function () {
-        var mh, h, s, xx, x, i;
-        x = $('#wrapper');
-        x.style.height = 'auto'; if (x.scrollHeight <= innerHeight) x.style.height = '100vh';
-        xx = $$('.container.full'); for (i = 0; i < xx.length; i++) {
-          x = xx[i];
-          s = getComputedStyle(x);
-          x.style.minHeight = '';
-          x.style.height = '';
-          mh = s.minHeight;
-          x.style.minHeight = 0;
-          x.style.height = '';
-          h = s.height; if (mh == 0) continue;
-          x.style.height = (h > mh ? 'auto' : mh);
-        }
-      };
-      (f)();
-      on('resize', function () {
-        clearTimeout(t);
-        t = setTimeout(f, 250);
-      });
-      on('load', f);
-    })();
-  } else if (client.browser == 'edge') {
-    (function () {
-      var xx = $$('.container > .inner > div:last-child'),
-        x, y, i; for (i = 0; i < xx.length; i++) {
-          x = xx[i];
-          y = getComputedStyle(x.parentNode); if (y.display != 'flex' && y.display != 'inline-flex') continue;
-          x.style.marginLeft = '-1px';
-        }
-    })();
-  } if (!client.canUse('object-fit')) {
-    (function () {
-      var xx = $$('.image[data-position]'),
-        x, w, c, i, src; for (i = 0; i < xx.length; i++) {
-          x = xx[i];
-          c = x.firstElementChild; if (c.tagName != 'IMG') {
-            w = c;
-            c = c.firstElementChild;
-          } if (c.parentNode.classList.contains('deferred')) {
-            c.parentNode.classList.remove('deferred');
-            src = c.getAttribute('data-src');
-            c.removeAttribute('data-src');
-          } else src = c.getAttribute('src');
-          c.style['backgroundImage'] = 'url(\'' + src + '\')';
-          c.style['backgroundSize'] = 'cover';
-          c.style['backgroundPosition'] = x.dataset.position;
-          c.style['backgroundRepeat'] = 'no-repeat';
-          c.src = 'data:image/svg+xml;charset=utf8,' + escape('<svg xmlns="http://www.w3.org/2000/svg" width="1" height="1" viewBox="0 0 1 1"></svg>'); if (x.classList.contains('full') && (x.parentNode && x.parentNode.classList.contains('full')) && (x.parentNode.parentNode && x.parentNode.parentNode.parentNode && x.parentNode.parentNode.parentNode.classList.contains('container')) && x.parentNode.children.length == 1) {
-            (function (x, w) {
-              var p = x.parentNode.parentNode,
-                f = function () {
-                  x.style['height'] = '0px';
-                  clearTimeout(t);
-                  t = setTimeout(function () {
-                    if (getComputedStyle(p).flexDirection == 'row') {
-                      if (w) w.style['height'] = '100%';
-                      x.style['height'] = (p.scrollHeight + 1) + 'px';
-                    } else {
-                      if (w) w.style['height'] = 'auto';
-                      x.style['height'] = 'auto';
-                    }
-                  }, 125);
-                },
-                t;
-              on('resize', f);
-              on('load', f);
-              (f)();
-            })(x, w);
-          }
-        }
-    })();
-    (function () {
-      var xx = $$('.gallery img'),
-        x, p, i, src; for (i = 0; i < xx.length; i++) {
-          x = xx[i];
-          p = x.parentNode; if (p.classList.contains('deferred')) {
-            p.classList.remove('deferred');
-            src = x.getAttribute('data-src');
-          } else src = x.getAttribute('src');
-          p.style['backgroundImage'] = 'url(\'' + src + '\')';
-          p.style['backgroundSize'] = 'cover';
-          p.style['backgroundPosition'] = 'center';
-          p.style['backgroundRepeat'] = 'no-repeat';
-          x.style['opacity'] = '0';
-        }
-    })();
-  } var scrollEvents = {
-    items: [], add: function (o) { this.items.push({ element: o.element, enter: ('enter' in o ? o.enter : null), leave: ('leave' in o ? o.leave : null), mode: ('mode' in o ? o.mode : 1), offset: ('offset' in o ? o.offset : 0), state: false, }); }, handler: function () {
-      var height = document.documentElement.clientHeight,
-        top = (client.os == 'ios' ? document.body.scrollTop : document.documentElement.scrollTop),
-        bottom = top + height;
-      scrollEvents.items.forEach(function (item) {
-        var bcr, elementTop, elementBottom, state, a, b; if (!item.enter && !item.leave) return true; if (item.element.offsetParent === null) return true;
-        bcr = item.element.getBoundingClientRect();
-        elementTop = top + Math.floor(bcr.top);
-        elementBottom = elementTop + bcr.height; switch (item.mode) {
-          case 1:
-          default:
-            state = (bottom > (elementTop - item.offset) && top < (elementBottom + item.offset)); break;
-          case 2:
-            a = (top + (height * 0.5));
-            state = (a > (elementTop - item.offset) && a < (elementBottom + item.offset)); break;
-          case 3:
-            a = top + (height * 0.25);
-            b = top + (height * 0.75);
-            state = (b > (elementTop - item.offset) && a < (elementBottom + item.offset)); break;
-        } if (state != item.state) {
-          item.state = state; if (item.state) {
-            if (item.enter) {
-              (item.enter).apply(item.element); if (!item.leave) item.enter = null;
-            }
-          } else {
-            if (item.leave) {
-              (item.leave).apply(item.element); if (!item.enter) item.leave = null;
-            }
-          }
-        }
-      });
-    }, init: function () {
-      on('load', this.handler);
-      on('resize', this.handler);
-      on('scroll', this.handler);
-      (this.handler)();
-    }
-  };
-  scrollEvents.init();
-  (function () {
-    var items = $$('.deferred'),
-      loadHandler, enterHandler; if (!('forEach' in NodeList.prototype)) NodeList.prototype.forEach = Array.prototype.forEach;
-    loadHandler = function () {
-      var i = this,
-        p = this.parentElement; if (i.dataset.src !== 'done') return; if (Date.now() - i._startLoad < 375) {
-          p.classList.remove('loading');
-          p.style.backgroundImage = 'none';
-          i.style.transition = '';
-          i.style.opacity = 1;
-        } else {
-        p.classList.remove('loading');
-        i.style.opacity = 1;
-        setTimeout(function () { i.style.backgroundImage = 'none'; }, 375);
-      }
-    };
-    enterHandler = function () {
-      var i = this,
-        p = this.parentElement,
-        src;
-      src = i.dataset.src;
-      i.dataset.src = 'done';
-      p.classList.add('loading');
-      i._startLoad = Date.now();
-      i.src = src;
-    };
-    items.forEach(function (p) {
-      var i = p.firstElementChild;
-      p.style.backgroundImage = 'url(' + i.src + ')';
-      p.style.backgroundSize = '100% 100%';
-      p.style.backgroundPosition = 'top left';
-      p.style.backgroundRepeat = 'no-repeat';
-      i.style.opacity = 0;
-      i.style.transition = 'opacity 0.375s ease-in-out';
-      i.addEventListener('load', loadHandler);
-      scrollEvents.add({ element: i, enter: enterHandler, offset: 250 });
-    });
-  })();
+const BASE_PATH = 'assets';
+const DEFAULT_LANG = 'en';
 
-  function lightboxGallery() {
-    var _this = this;
-    this.id = 'gallery';
-    this.$wrapper = $('#' + this.id);
-    this.$modal = null;
-    this.$modalImage = null;
-    this.$modalNext = null;
-    this.$modalPrevious = null;
-    this.$links = null;
-    this.locked = false;
-    this.current = null;
-    this.delay = 375;
-    this.navigation = null;
-    this.mobile = null;
-    this.initModal();
-  };
-  lightboxGallery.prototype.init = function (config) {
-    var _this = this,
-      $links = $$('#' + config.id + ' .thumbnail'),
-      navigation = (config.navigation && $links.length > 1),
-      mobile = config.mobile,
-      i; for (i = 0; i < $links.length; i++)(function (index) {
-        $links[index].addEventListener('click', function (event) {
-          if (this.dataset.lightboxIgnore == '1') return;
-          event.stopPropagation();
-          event.preventDefault();
-          _this.show(index, { $links: $links, navigation: navigation, mobile: mobile });
-        });
-      })(i);
-  };
-  lightboxGallery.prototype.initModal = function () {
-    var _this = this,
-      $modal, $modalImage, $modalNext, $modalPrevious;
-    $modal = document.createElement('div');
-    $modal.id = this.id + '-modal';
-    $modal.tabIndex = -1;
-    $modal.className = 'gallery-modal';
-    $modal.innerHTML = '<div class="inner"><img src="" /></div><div class="nav previous"></div><div class="nav next"></div><div class="close"></div>';
-    $body.appendChild($modal);
-    $modalImage = $('#' + this.id + '-modal img');
-    $modalImage.addEventListener('load', function () {
-      setTimeout(function () {
-        if (!$modal.classList.contains('visible')) return;
-        $modal.classList.add('loaded');
-        setTimeout(function () { $modal.classList.remove('switching'); }, _this.delay);
-      }, ($modal.classList.contains('switching') ? 0 : _this.delay));
-    });
-    $modalNext = $('#' + this.id + '-modal .next');
-    $modalPrevious = $('#' + this.id + '-modal .previous');
-    $modal.show = function (index) {
-      var item; if (_this.locked) return; if (index < 0) index = _this.$links.length - 1;
-      else if (index >= _this.$links.length) index = 0; if (index == _this.current) return;
-      item = _this.$links.item(index); if (!item) return;
-      _this.locked = true; if (_this.current !== null) {
-        $modal.classList.remove('loaded');
-        $modal.classList.add('switching');
-        setTimeout(function () {
-          _this.current = index;
-          $modalImage.src = item.href;
-          setTimeout(function () {
-            $modal.focus();
-            _this.locked = false;
-          }, _this.delay);
-        }, _this.delay);
+// English is the HTML fallback, so there is no EN.json file.
+// Add future languages here, then create the matching file in assets/i18n/.
+const LANGS = [
+  { code: 'en', label: 'EN', file: null, htmlLang: 'en' },
+  { code: 'zh', label: 'ZH', file: 'zh.json', htmlLang: 'zh' }
+];
+
+// Browser language recognition map. Default still stays English unless the user chooses another language.
+const HOME_PROJECT_LIMIT = 8;
+const HOME_FRIEND_LIMIT = 6;
+const VALID_VIEWS = new Set(['projects', 'friends']);
+
+const LANGUAGE_ALIASES = {
+  en: 'en',
+  'en-us': 'en',
+  'en-gb': 'en',
+  zh: 'zh',
+  'zh-cn': 'zh',
+  'zh-sg': 'zh',
+  'zh-hans': 'zh',
+  'zh-hant': 'zh',
+  'zh-tw': 'zh',
+  'zh-hk': 'zh'
+};
+
+const PROJECTS = [
+  {
+    title: { en: 'Personal Homepage', zh: '个人主页' },
+    desc: {
+      en: 'A minimal responsive homepage for profile, projects, photos, and links.',
+      zh: '一个极简、响应式的个人介绍页，用来放自我介绍、项目、照片和链接。'
+    },
+    link: ['#']
+  },
+  {
+    title: { en: 'Bing Gallery', zh: '必应画廊' },
+    desc: {
+      en: 'A collection of images from the Bing Image Search API.',
+      zh: '来自必应图片搜索API的图片集合。'
+    },
+    link: ['bing.qsim.top']
+  },
+  {
+    title: { en: 'Lab', zh: '实验室' },
+    desc: {
+      en: 'A personal playground for experiments and explorations.',
+      zh: '一个用于实验和探索的个人实验室'
+    },
+    link: ['lab.qsim.top']
+  }
+];
+// Links are split into parts instead of being written as full URLs in HTML.  scheme: 'https', 
+const LINK_REGISTRY = {
+  github: {host: ['github', 'com'], path: ['zigou23'] },
+  sponsor: {host: ['github', 'com'], path: ['sponsors', 'zigou23'] },
+  telegram: {host: ['t', 'me'], path: ['qsims_bot'] },
+  status: {host: ['qsim', 'top'], path: ['status'] }
+};
+
+// Email is assembled only when the user clicks the email button.
+const CONTACT_PARTS = {
+  user: ['t'],
+  domain: ['qsim', 'top']
+};
+
+const state = {
+  lang: DEFAULT_LANG,
+  i18n: {},
+  view: null,
+  friends: null,
+  friendsLoading: false,
+  friendsLoaded: false
+};
+
+const defaultMarkup = new Map();
+const i18nCache = new Map();
+
+const header = document.getElementById('site-header');
+const brand = document.getElementById('site-brand');
+const heroTitle = document.getElementById('hero-title');
+const menuToggle = document.getElementById('menu-toggle');
+const mobileMenu = document.getElementById('mobile-menu');
+const themeToggle = document.getElementById('theme-toggle');
+const langToggle = document.getElementById('lang-toggle');
+const allNavLinks = [...document.querySelectorAll('.nav-link, .mobile-link')];
+
+function detectBrowserLanguage() {
+  const raw = (navigator.language || navigator.userLanguage || '').toLowerCase();
+  return LANGUAGE_ALIASES[raw] || LANGUAGE_ALIASES[raw.split('-')[0]] || DEFAULT_LANG;
+}
+
+function langExists(code) {
+  return LANGS.some(lang => lang.code === code);
+}
+
+function getInitialLanguage() {
+  const urlLang = new URLSearchParams(window.location.search).get('lang');
+  const savedLang = localStorage.getItem('lang');
+
+  if (urlLang && langExists(urlLang)) return urlLang;
+  if (savedLang && langExists(savedLang)) return savedLang;
+
+  // Keep default English as requested. Browser detection is ready for future opt-in logic.
+  detectBrowserLanguage();
+  return DEFAULT_LANG;
+}
+
+
+function getInitialView() {
+  const view = new URLSearchParams(window.location.search).get('view');
+  return VALID_VIEWS.has(view) ? view : null;
+}
+
+function getPlainUrl(hash = '') {
+  return `${window.location.pathname}${hash}`;
+}
+
+function getViewUrl(view) {
+  return `${window.location.pathname}?view=${encodeURIComponent(view)}#${view}`;
+}
+
+function tText(path, fallback) {
+  return readPath(state.i18n, path) || fallback;
+}
+
+function applyViewMode() {
+  state.view = getInitialView();
+  document.body.dataset.view = state.view || 'home';
+
+  document.querySelectorAll('main > section[id]').forEach(section => {
+    const shouldShow = !state.view || section.id === state.view;
+    section.toggleAttribute('hidden', !shouldShow);
+    section.classList.toggle('is-full-view', state.view === section.id);
+  });
+}
+
+function setupViewNavigation() {
+  document.addEventListener('click', event => {
+    const link = event.target.closest('.nav-link, .mobile-link, .brand');
+    if (!link || !state.view) return;
+
+    const hash = link.getAttribute('href') || '#home';
+    if (!hash.startsWith('#')) return;
+
+    event.preventDefault();
+    window.location.href = getPlainUrl(hash);
+  });
+}
+
+function getVisibleProjects() {
+  return state.view === 'projects' ? PROJECTS : PROJECTS.slice(0, HOME_PROJECT_LIMIT);
+}
+
+function getVisibleFriends() {
+  if (!state.friends) return [];
+  return state.view === 'friends' ? state.friends : state.friends.slice(0, HOME_FRIEND_LIMIT);
+}
+
+function shuffleArray(items) {
+  const copy = [...items];
+  for (let i = copy.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [copy[i], copy[j]] = [copy[j], copy[i]];
+  }
+  return copy;
+}
+
+function localizeValue(value) {
+  if (value && typeof value === 'object' && !Array.isArray(value)) {
+    return value[state.lang] || value[DEFAULT_LANG] || Object.values(value)[0] || '';
+  }
+  return value || '';
+}
+
+function readPath(obj, path) {
+  return path.split('.').reduce((acc, key) => (acc && acc[key] !== undefined ? acc[key] : undefined), obj);
+}
+
+function collectDefaultMarkup() {
+  document.querySelectorAll('[data-i18n], [data-i18n-html]').forEach(el => {
+    const key = el.dataset.i18n || el.dataset.i18nHtml;
+    defaultMarkup.set(key, el.innerHTML);
+  });
+}
+
+async function loadLanguage(langCode) {
+  const config = LANGS.find(lang => lang.code === langCode) || LANGS[0];
+
+  if (!config.file) {
+    state.i18n = {};
+    state.lang = DEFAULT_LANG;
+    return {};
+  }
+
+  if (i18nCache.has(langCode)) {
+    state.i18n = i18nCache.get(langCode);
+    state.lang = langCode;
+    return state.i18n;
+  }
+
+  const response = await fetch(`${BASE_PATH}/i18n/${config.file}`);
+  if (!response.ok) throw new Error(`Failed to load language file: ${config.file}`);
+
+  const data = await response.json();
+  i18nCache.set(langCode, data);
+  state.i18n = data;
+  state.lang = langCode;
+  return data;
+}
+
+function translateElement(el) {
+  const key = el.dataset.i18n || el.dataset.i18nHtml;
+  const fallback = defaultMarkup.get(key) || el.innerHTML;
+  const translated = readPath(state.i18n, key);
+
+  if (el.dataset.i18nHtml !== undefined) {
+    el.innerHTML = translated || fallback;
+  } else {
+    el.textContent = translated || fallback;
+  }
+}
+
+function getNextLanguage() {
+  const idx = LANGS.findIndex(lang => lang.code === state.lang);
+  return LANGS[(idx + 1) % LANGS.length];
+}
+
+function updateLanguageButton() {
+  if (!langToggle) return;
+  const next = getNextLanguage();
+  langToggle.textContent = next.label;
+  langToggle.setAttribute('aria-label', `Switch language to ${next.label}`);
+  langToggle.setAttribute('title', `Switch to ${next.label}`);
+}
+
+function applyTranslations() {
+  const langConfig = LANGS.find(lang => lang.code === state.lang) || LANGS[0];
+  document.documentElement.lang = langConfig.htmlLang;
+  langToggle.dataset.lang = state.lang;
+  updateLanguageButton();
+
+  document.querySelectorAll('[data-i18n], [data-i18n-html]').forEach(translateElement);
+  renderProjects();
+  if (state.friendsLoaded && state.friends) renderFriends(state.friends);
+}
+
+async function setLanguage(langCode) {
+  try {
+    await loadLanguage(langCode);
+    localStorage.setItem('lang', state.lang);
+    applyTranslations();
+  } catch (error) {
+    console.warn(error);
+  }
+}
+
+function toggleLanguage() {
+  const next = getNextLanguage();
+  setLanguage(next.code);
+}
+
+function buildUrl(definition) {
+  if (!definition) return '#';
+  if (definition.kind === 'hash') return definition.value;
+
+  const scheme = definition.scheme || 'https';
+  const host = Array.isArray(definition.host) ? definition.host.join('.') : definition.host;
+  const path = Array.isArray(definition.path) && definition.path.length ? `/${definition.path.join('/')}` : '';
+  return `${scheme}://${host}${path}`;
+}
+
+function buildSplitUrl(link) {
+  if (!Array.isArray(link) || !link[0]) return '#';
+
+  const first = String(link[0]).trim();
+
+  // Anchor links: ['#'], ['#projects']
+  if (first.startsWith('#')) {
+    return first;
+  }
+
+  // Relative / local paths: ['./demo'], ['../demo'], ['/demo']
+  if (
+    first.startsWith('./') ||
+    first.startsWith('../') ||
+    first.startsWith('/')
+  ) {
+    const rest = link
+      .slice(1)
+      .filter(Boolean)
+      .map(part => String(part).trim().replace(/^\/+|\/+$/g, ''))
+      .filter(Boolean)
+      .join('/');
+
+    return rest ? `${first.replace(/\/+$/, '')}/${rest}` : first;
+  }
+
+  // Single local path: ['demo'], ['projects/homepage']
+  // If it does not look like a domain, treat it as a relative path.
+  const looksLikeDomain =
+    first.includes('.') &&
+    !first.includes('/') &&
+    !first.includes(' ');
+
+  if (!looksLikeDomain) {
+    const path = link
+      .filter(Boolean)
+      .map(part => String(part).trim().replace(/^\/+|\/+$/g, ''))
+      .filter(Boolean)
+      .join('/');
+
+    return path || '#';
+  }
+
+  // External links: ['example.com'], ['example.com', 'path']
+  const host = first
+    .replace(/^https?:\/\//, '')
+    .replace(/\/+$/, '');
+
+  const path = link
+    .slice(1)
+    .filter(Boolean)
+    .map(part => String(part).trim().replace(/^\/+|\/+$/g, ''))
+    .filter(Boolean)
+    .join('/');
+
+  return path ? `https://${host}/${path}` : `https://${host}`;
+}
+function buildProjectUrl(project) {
+  return buildSplitUrl(project.link);
+}
+function buildFriendUrl(friend) {
+  return buildSplitUrl(friend.link);
+}
+
+function buildEmail() {
+  return `${CONTACT_PARTS.user.join('')}@${CONTACT_PARTS.domain.join('.')}`;
+}
+
+function setupObfuscatedActions() {
+  document.addEventListener('click', event => {
+    const emailButton = event.target.closest('[data-email-action]');
+    if (emailButton) {
+      window.location.href = `mailto:${buildEmail()}`;
+      return;
+    }
+
+    const linkButton = event.target.closest('[data-link-key]');
+    if (linkButton) {
+      const url = buildUrl(LINK_REGISTRY[linkButton.dataset.linkKey]);
+      if (url.startsWith('#')) {
+        window.location.hash = url;
       } else {
-        _this.current = index;
-        $modalImage.src = item.href;
-        $modal.classList.add('visible');
-        setTimeout(function () {
-          $modal.focus();
-          _this.locked = false;
-        }, _this.delay);
+        window.open(url, '_blank', 'noopener');
       }
-    };
-    $modal.hide = function () {
-      if (_this.locked) return; if (!$modal.classList.contains('visible')) return;
-      _this.locked = true;
-      $modal.classList.remove('visible');
-      $modal.classList.remove('loaded');
-      $modal.classList.remove('switching');
-      setTimeout(function () {
-        $modalImage.src = '';
-        _this.locked = false;
-        $body.focus();
-        _this.current = null;
-      }, _this.delay);
-    };
-    $modal.next = function () { $modal.show(_this.current + 1); };
-    $modal.previous = function () { $modal.show(_this.current - 1); };
-    $modal.first = function () { $modal.show(0); };
-    $modal.last = function () { $modal.show(_this.$links.length - 1); };
-    $modal.addEventListener('touchmove', function (event) { event.preventDefault(); });
-    $modal.addEventListener('click', function (event) { $modal.hide(); });
-    $modal.addEventListener('keydown', function (event) {
-      if (!$modal.classList.contains('visible')) return; switch (event.keyCode) {
-        case 39:
-        case 32:
-          if (!_this.navigation) break;
-          event.preventDefault();
-          event.stopPropagation();
-          $modal.next(); break;
-        case 37:
-          if (!_this.navigation) break;
-          event.preventDefault();
-          event.stopPropagation();
-          $modal.previous(); break;
-        case 36:
-          if (!_this.navigation) break;
-          event.preventDefault();
-          event.stopPropagation();
-          $modal.first(); break;
-        case 35:
-          if (!_this.navigation) break;
-          event.preventDefault();
-          event.stopPropagation();
-          $modal.last(); break;
-        case 27:
-          event.preventDefault();
-          event.stopPropagation();
-          $modal.hide(); break;
-      }
-    });
-    $modalNext.addEventListener('click', function (event) { $modal.next(); });
-    $modalPrevious.addEventListener('click', function (event) { $modal.previous(); });
-    this.$modal = $modal;
-    this.$modalImage = $modalImage;
-    this.$modalNext = $modalNext;
-    this.$modalPrevious = $modalPrevious;
+    }
+  });
+}
+
+function renderProjects() {
+  const grid = document.getElementById('project-grid');
+  const actions = document.getElementById('project-actions');
+  if (!grid) return;
+
+  const visibleProjects = getVisibleProjects();
+  
+  grid.innerHTML = visibleProjects.map(project => {
+    const href = buildProjectUrl(project);
+    const targetAttr = href.startsWith('http') ? ' target="_blank" rel="noopener noreferrer"' : '';
+    return `
+      <a class="project-card" href="${href}"${targetAttr}>
+        <div>
+          <h3 class="project-title">${localizeValue(project.title)}</h3>
+          <p class="project-desc">${localizeValue(project.desc)}</p>
+        </div>
+      </a>`;
+  }).join('');
+
+  if (!actions) return;
+
+  if (state.view === 'projects') {
+    actions.innerHTML = `<a class="view-all-link" href="${getPlainUrl('#projects')}">${tText('common.backHome', 'Back home')}</a>`;
+  } else if (PROJECTS.length > HOME_PROJECT_LIMIT) {
+    actions.innerHTML = `<a class="view-all-link" href="${getViewUrl('projects')}">${tText('projects.viewAll', 'View all projects')} →</a>`;
+  } else {
+    actions.innerHTML = '';
+  }
+}
+
+function renderFriends(friends) {
+  const list = document.getElementById('friends-list');
+  const actions = document.getElementById('friends-actions');
+  if (!list) return;
+
+  if (!friends.length) {
+    list.innerHTML = `<div class="lazy-note">${readPath(state.i18n, 'friends.empty') || 'No friends yet.'}</div>`;
+    if (actions) actions.innerHTML = '';
+    return;
+  }
+
+  const visibleFriends = getVisibleFriends();
+  list.dataset.state = 'loaded';
+
+  list.innerHTML = visibleFriends.map(friend => {
+    const href = buildFriendUrl(friend);
+
+    return `
+      <a class="friend-item" href="${href}" target="_blank" rel="noopener noreferrer">
+        <div>
+          <div class="friend-name">${friend.name}</div>
+          <div class="friend-desc">${localizeValue(friend.description)}</div>
+        </div>
+      </a>`;
+  }).join('');
+
+  if (!actions) return;
+
+  if (state.view === 'friends') {
+    actions.innerHTML = `<a class="view-all-link" href="${getPlainUrl('#friends')}">${tText('common.backHome', 'Back home')}</a>`;
+  } else if (friends.length > HOME_FRIEND_LIMIT) {
+    actions.innerHTML = `<a class="view-all-link" href="${getViewUrl('friends')}">${tText('friends.viewAll', 'View all friends')} →</a>`;
+  } else {
+    actions.innerHTML = '';
+  }
+}
+
+function renderFriendLoading() {
+  const list = document.getElementById('friends-list');
+  if (!list) return;
+  list.dataset.state = 'loading';
+  list.innerHTML = `
+    <div class="friend-skeleton" aria-label="Loading friends">
+      <div class="skeleton-line"></div>
+      <div class="skeleton-line"></div>
+      <div class="skeleton-line"></div>
+    </div>`;
+}
+
+function renderFriendError() {
+  const list = document.getElementById('friends-list');
+  if (!list) return;
+  list.dataset.state = 'error';
+  const text = readPath(state.i18n, 'friends.error') || 'Failed to load friends.';
+  list.innerHTML = `<div class="error-state">${text}</div>`;
+}
+
+async function loadFriends() {
+  if (state.friendsLoaded || state.friendsLoading) return;
+  state.friendsLoading = true;
+  renderFriendLoading();
+
+  try {
+    const response = await fetch(`${BASE_PATH}/data/friends.json`);
+    if (!response.ok) throw new Error('Failed to load friends.json');
+    const raw = await response.json();
+    state.friends = shuffleArray(raw).map((friend, index) => ({ ...friend, __index: index }));
+    state.friendsLoaded = true;
+    renderFriends(state.friends);
+  } catch (error) {
+    console.warn(error);
+    renderFriendError();
+  } finally {
+    state.friendsLoading = false;
+  }
+}
+
+function setupFriendsLazyLoad() {
+  const friendsSection = document.querySelector('[data-lazy-friends]');
+  if (!friendsSection) return;
+
+  if (state.view === 'friends') {
+    loadFriends();
+    return;
+  }
+
+  if (!('IntersectionObserver' in window)) {
+    loadFriends();
+    return;
+  }
+
+  const observer = new IntersectionObserver(entries => {
+    if (entries.some(entry => entry.isIntersecting)) {
+      loadFriends();
+      observer.disconnect();
+    }
+  }, { rootMargin: '160px 0px', threshold: 0.01 });
+
+  observer.observe(friendsSection);
+}
+
+function setupFriendClicks() {
+  // Friend cards are normal <a> links now, so no JS click handler is needed.
+}
+
+function applyTheme(theme) {
+  document.documentElement.dataset.theme = theme;
+  localStorage.setItem('theme', theme);
+}
+
+function setupTheme() {
+  const saved = localStorage.getItem('theme');
+  const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+  applyTheme(saved || (prefersDark ? 'dark' : 'light'));
+
+  themeToggle.addEventListener('click', () => {
+    const next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+    applyTheme(next);
+  });
+}
+
+function setupMenu() {
+  menuToggle.addEventListener('click', () => {
+    const isOpen = mobileMenu.classList.toggle('open');
+    menuToggle.classList.toggle('open', isOpen);
+    menuToggle.setAttribute('aria-expanded', String(isOpen));
+  });
+
+  mobileMenu.addEventListener('click', event => {
+    if (event.target.closest('a,button')) {
+      mobileMenu.classList.remove('open');
+      menuToggle.classList.remove('open');
+      menuToggle.setAttribute('aria-expanded', 'false');
+    }
+  });
+}
+
+function setupHeaderBrandVisibility() {
+  if (!brand || !heroTitle) return;
+
+  if (!('IntersectionObserver' in window)) {
+    const update = () => brand.classList.toggle('is-hidden', window.scrollY < 220);
+    window.addEventListener('scroll', update, { passive: true });
+    update();
+    return;
+  }
+
+  const observer = new IntersectionObserver(entries => {
+    const titleVisible = entries.some(entry => entry.isIntersecting);
+    brand.classList.toggle('is-hidden', titleVisible);
+  }, {
+    rootMargin: '-72px 0px -45% 0px',
+    threshold: [0, 0.05, 0.2, 0.6]
+  });
+
+  observer.observe(heroTitle);
+}
+
+function setupScrollState() {
+  const sections = [...document.querySelectorAll('main section[id]')];
+
+  const updateHeader = () => {
+    header.classList.toggle('scrolled', window.scrollY > 8);
   };
-  lightboxGallery.prototype.show = function (href, config) {
-    this.$links = config.$links;
-    this.navigation = config.navigation;
-    this.mobile = config.mobile; if (this.navigation) {
-      this.$modalNext.style.display = '';
-      this.$modalPrevious.style.display = '';
-    } else {
-      this.$modalNext.style.display = 'none';
-      this.$modalPrevious.style.display = 'none';
-    } if (client.mobile && !this.mobile) return;
-    this.$modal.show(href);
-  }; var _lightboxGallery = new lightboxGallery;
-  _lightboxGallery.init({ id: 'gallery01', navigation: true, mobile: true });
-})();
+
+  const observer = new IntersectionObserver(entries => {
+    const visible = entries
+      .filter(entry => entry.isIntersecting)
+      .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+
+    if (!visible) return;
+
+    allNavLinks.forEach(link => {
+      link.classList.toggle('active', link.dataset.section === visible.target.id);
+    });
+  }, {
+    rootMargin: '-35% 0px -55% 0px',
+    threshold: [0, 0.1, 0.5, 1]
+  });
+
+  sections.forEach(section => observer.observe(section));
+  window.addEventListener('scroll', updateHeader, { passive: true });
+  updateHeader();
+}
+
+function startClock() {
+  const clock = document.getElementById('clock');
+  if (!clock) return;
+
+  const tick = () => {
+    const locale = state.lang === 'zh' ? 'zh-CN' : 'en-US';
+    
+    clock.textContent = new Date().toLocaleTimeString(locale, {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true,               // 24 h false / AM/PM true
+      timeZone: 'Asia/hong_kong' // Fixed timezone for consistency
+    });
+  };
+
+  tick();
+  window.setInterval(tick, 10000);
+}
+
+function setupLanguageToggle() {
+  langToggle.addEventListener('click', toggleLanguage);
+}
+
+async function init() {
+  collectDefaultMarkup();
+  applyViewMode();
+  setupTheme();
+  setupMenu();
+  setupScrollState();
+  setupHeaderBrandVisibility();
+  setupObfuscatedActions();
+  setupViewNavigation();
+  setupFriendClicks();
+  setupFriendsLazyLoad();
+  setupLanguageToggle();
+  startClock();
+
+  await setLanguage(getInitialLanguage());
+}
+
+init();

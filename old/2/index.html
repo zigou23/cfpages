@@ -17,7 +17,7 @@
 	<link rel="dns-prefetch" href="//i1.wp.com" />
 	<link rel="icon" href="favicon.ico" sizes="64x64" type="image/png">
 	<!-- <link href="https://fonts.googleapis.com/css?family=Quicksand:400,400italic" rel="stylesheet" type="text/css" /> -->
-	<link rel="stylesheet" href="style.css">
+	<link rel="stylesheet" href="./style.css">
 	<noscript>
 		<style>
 			body {
@@ -107,9 +107,9 @@
                 </section> -->
 				<section id="about-section">
 					<h2 class="text03">About Me</h2>
-					<p class="text04">自谓文能提笔控萝莉，武能床上安人妻；进可欺身压正太，退可提臀迎众基；怎奈何萝莉敢来把哥欺，人妻已然弃哥去，正太投入御姐里，众基已然成家去。那么，问题来了，你好，约吗？</p>
+					
 					<p class="text04">
-						本人精通Adobe系列等软件的安装与卸载；熟练掌握VB、C、C++、C#、Python、PHP、FoxPro、SQL、java、css、html、JavaScript等单词的拼写；熟悉windows、Winphone、Linux、Mac、Android、Ios、鸿蒙等操作系统的开关机；娴熟英语六级、日语N1、汉语六级、法语C2的等级考试的发卷收卷流程。在这里找一家IT公司端茶递水的工作。<!-- Hi guys. You must have worked hard to find me. I am a silent person and it is difficult to get along with. But I will try to help as many people as possible. My page is very simple, even the theme is copied, but that doesn't mean I can't do one thing well. When this pandemic spreads, I want to work hard to learn some network knowledge, and then do what I want to do. I don't know how to start, but I'm sure I'll keep going! (Translate by Google.) -->
+						我以前干平面设计的，在印刷厂当了三年打工仔，别说什么汉化、什么汇编、反编译、编码、非标宏了，我那会儿连百度网盘都不会安装，后来机缘巧合+兴趣爱好，才转行后期学习了PS, Ai, CDR, CAD, SAI, InDesign, Lr, Topaz, Sketch, Principle, XD, AE, Au, Pr, AME, Edius, Vegas, FCPX, Animator, C4D, U3D, UE4, maya, 3dsMax, Nuke, Houdini, Blender, Sketchup, Rhino, Mocha, PFTrack, Boujou, Davinci, ZBrush, Substance, RealFlow, Octane, Vray, Redshift, Arnold, FluidRay, Urender, CORONA, TurbulenceFD, KK, TP, XP, GSG, Artlantis, KeyShot, Mathematica, TopoGun, Daz Studio, Retas HD, Acrobat DC, Office, WPS,威力导演，会声会影，爱剪辑，剪映，巧影，喵影工厂，万兴神剪手等软件的安装和卸载。在群友们的热心帮助下，我现在已经熟练掌握了C、C++、C#、Java, JavaScript, Android, html, css+, H5, PHP, Python, Object-C, Swift, MySQL SQL Service, oracle, Scratch, Appium, Selenium, Cocos2D-X, Ruby, Perl, Scala, Shell, Delphi, Fortran, Pascal Prolog等单词拼写；熟悉windows、Winphone、Linux、Mac、Android、Ios、鸿蒙等操作系统的开关机；娴熟英语六级、日语N1、汉语六级、法语C2的等级考试的发卷收卷流程。在这里找一家IT公司端茶递水的工作。
 					</p>
 				</section>
 				<section id="link-section">
@@ -119,7 +119,7 @@
 					<!-- <a href="/link">More...(testing)</a> -->
 					<script>
 						document.addEventListener("DOMContentLoaded", function () {
-							if (window.location.hostname === 'qsim.top') {
+							if (window.location.hostname === 'qsim.top' || window.location.hostname == '127.0.0.1' ) {
 								fetch('./friends.json')
 									.then(response => response.json())
 									.then(data => {
@@ -127,9 +127,9 @@
 										const container = document.getElementById('friend-container');
 										data.forEach(friend => {
 											const li = document.createElement('li');
-
 											const link = document.createElement('a');
-											link.href = friend.link;
+											const encodedUrl = encodeURIComponent(friend.link.replace(/^https?:\/\//, ''));
+											link.href = `https://return-x.netlify.app/return/?url6=${encodedUrl}`;
 											link.title = friend.description;
 											link.target = '_blank';
 
@@ -151,7 +151,15 @@
 							}
 						});
 					</script>
-
+					<p style="color: #adadad;display: inline;" id="friend-link">If you want to add a friend link, you can submit a PR on</p>
+					<a style="color: #7FB3D5;" href="https://github.com/zigou23/cfpages/tree/homepage">GitHub</a>
+					<script>
+						const userLang = navigator.language || navigator.languages[0];
+						const friendLinkText = document.getElementById("friend-link");
+						if (userLang.includes('zh')) {
+							friendLinkText.innerHTML = '如果你想添加友链，可以提交 PR 到 ';
+						}
+					</script>
 				</section>
 				<section id="contact-section">
 					<h2 class="text03">Contact</h2>
@@ -226,16 +234,16 @@
 			</div>
 		</div>
 	</div>
-	<script src="script.js"></script>
+	<script src="./script.js"></script>
 	<script>
 		window.onload = function () {
 			setTimeout(function () {
 				var d = 100 * (new Date().getMonth() + 1) + new Date().getDate();
 				var s = (1000 * d + Math.E * d).toFixed(0);
 				if (window.innerWidth < window.innerHeight) {
-					document.body.style.background = "linear-gradient(45deg, rgba(3,28,25,0.53) 0%, rgba(8,28,59,0.53) 100%), url(https://i1.wp.com/bing.qsim.top/imgs/mobile/" + s + ") center no-repeat";
+					document.body.style.background = "linear-gradient(45deg, rgba(3,28,25,0.53) 0%, rgba(8,28,59,0.53) 100%), url(https://i1.wp.com/bingapi.qsim.top/imgs/mobile/" + s + ") center no-repeat";
 				} else {
-					document.body.style.background = "linear-gradient(45deg, rgba(3,28,25,0.53) 0%, rgba(8,28,59,0.53) 100%), url(https://i1.wp.com/bing.qsim.top/imgs/" + s + ") center no-repeat";
+					document.body.style.background = "linear-gradient(45deg, rgba(3,28,25,0.53) 0%, rgba(8,28,59,0.53) 100%), url(https://i1.wp.com/bingapi.qsim.top/imgs/" + s + ") center no-repeat";
 				}
 			}, 10); // milliseconds delay
 		};

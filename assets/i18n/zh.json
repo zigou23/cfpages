@@ -1,0 +1,58 @@
+{
+  "nav": {
+    "home": "首页",
+    "about": "关于",
+    "projects": "项目",
+    "photos": "摄影",
+    "friends": "友链"
+  },
+  "common": {
+    "backHome": "返回首页"
+  },
+  "home": {
+    "eyebrow": "开发者 / 旅行者 / 折腾爱好者",
+    "title": "Hello,<br><span>我是 Ziggo</span>",
+    "summary": "别名 ZiGou. 我把这里保持得尽量简单：简短的自我介绍、正在做的项目、有用的链接，以及一个安静的摄影记录角落。",
+    "primaryCta": "查看项目",
+    "secondaryCta": "关于我",
+    "blogCta": "Blog",
+    "maintenance": "维护中",
+    "githubCta": "GitHub",
+    "sponsorCta": "Sponsor"
+  },
+  "info": {
+    "locationLabel": "Location",
+    "locationValue": "",
+    "timeLabel": "Local Time",
+    "contactLabel": "Contact",
+    "statusLabel": "Status",
+    "statusValue": "缓慢更新中",
+    "focusLabel": "Focus",
+    "focusValue": "AI 开发 / 折腾 Linux / 探索世界"
+  },
+  "about": {
+    "title": "About Me",
+    "p1": "我是一枚普通的打工人，对计算机和技术有着真实的热情。平时喜欢做 AI 开发、捣鼓机器学习，也会折腾安卓刷机、Linux 系统和 STM32 这类嵌入式小玩意儿。不盯屏幕的时候，大概在轻度游戏或者计划下一趟旅行。",
+    "p2": "这个站点是我记录所做、所学的地方，偶尔也会写些乱七八糟的东西。没什么大主题，就是自己在网上的一个角落。",
+    "item1": "保持：简洁、开放、长期更新"
+  },
+  "projects": {
+    "title": "Projects",
+    "subtitle": "一些正在维护或计划中的个人项目。",
+    "viewAll": "查看全部项目"
+  },
+  "photos": {
+    "title": "Photography",
+    "featureTitle": "建设中",
+    "featureText": "部分摄影板块正在升级建设中，敬请期待",
+    "link": "查看摄影归档"
+  },
+  "friends": {
+    "title": "Friends",
+    "subtitle": "友链、常读的网站或值得推荐的人。",
+    "idle": "滚动到这里时再加载友链。",
+    "empty": "还没有添加友链。",
+    "error": "友链加载失败。",
+    "viewAll": "查看全部友链"
+  }
+}
