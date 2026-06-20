@@ -8,7 +8,7 @@ const LANGS = [
   { code: 'zh', label: 'ZH', file: 'zh.json', htmlLang: 'zh' }
 ];
 
-// Browser language recognition map. Default still stays English unless the user chooses another language.
+// Browser language recognition map. Falls back to English when the browser language is unsupported.
 const HOME_PROJECT_LIMIT = 8;
 const HOME_FRIEND_LIMIT = 6;
 const VALID_VIEWS = new Set(['projects', 'friends']);
@@ -88,8 +88,20 @@ const langToggle = document.getElementById('lang-toggle');
 const allNavLinks = [...document.querySelectorAll('.nav-link, .mobile-link')];
 
 function detectBrowserLanguage() {
-  const raw = (navigator.language || navigator.userLanguage || '').toLowerCase();
-  return LANGUAGE_ALIASES[raw] || LANGUAGE_ALIASES[raw.split('-')[0]] || DEFAULT_LANG;
+  const browserLanguages = [
+    ...(Array.isArray(navigator.languages) ? navigator.languages : []),
+    navigator.language,
+    navigator.userLanguage
+  ].filter(Boolean);
+
+  for (const language of browserLanguages) {
+    const raw = language.toLowerCase();
+    const matched = LANGUAGE_ALIASES[raw] || LANGUAGE_ALIASES[raw.split('-')[0]];
+
+    if (matched && langExists(matched)) return matched;
+  }
+
+  return DEFAULT_LANG;
 }
 
 function langExists(code) {
@@ -103,9 +115,7 @@ function getInitialLanguage() {
   if (urlLang && langExists(urlLang)) return urlLang;
   if (savedLang && langExists(savedLang)) return savedLang;
 
-  // Keep default English as requested. Browser detection is ready for future opt-in logic.
-  detectBrowserLanguage();
-  return DEFAULT_LANG;
+  return detectBrowserLanguage();
 }
 
 
